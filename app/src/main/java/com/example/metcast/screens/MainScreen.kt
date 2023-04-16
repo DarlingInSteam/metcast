@@ -1,18 +1,13 @@
 package com.example.metcast.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Card
-import androidx.compose.material.Icon
-import androidx.compose.material.IconButton
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,23 +16,15 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.metcast.R
 import com.example.metcast.ui.theme.BlueLight
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.rememberPagerState
 
 @Preview(showBackground = true)
 @Composable
-fun MainScreen() {
-    Image(
-        painter = painterResource(id = R.drawable.background),
-        contentDescription = "im1",
-        modifier = Modifier
-            .fillMaxSize()
-            .alpha(0.9f),
-        contentScale = ContentScale.FillBounds
-    )
-
+fun MainCard() {
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp),
+            .padding(5.dp)
     ) {
         Card(
             modifier = Modifier.fillMaxWidth(),
@@ -72,14 +59,10 @@ fun MainScreen() {
                         )
                     }
                     Text(
-                        text = "Moscow",
-                        style = TextStyle(fontSize = 24.sp),
-                        color = Color.White
+                        text = "Moscow", style = TextStyle(fontSize = 24.sp), color = Color.White
                     )
                     Text(
-                        text = "10°C",
-                        style = TextStyle(fontSize = 64.sp),
-                        color = Color.White
+                        text = "10°C", style = TextStyle(fontSize = 64.sp), color = Color.White
                     )
                     Text(
                         text = "Partly cloudy",
@@ -90,11 +73,9 @@ fun MainScreen() {
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        IconButton(
-                            onClick = {
+                        IconButton(onClick = {
 
-                            }
-                        ) {
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_search),
                                 contentDescription = "im3",
@@ -107,11 +88,9 @@ fun MainScreen() {
                             style = TextStyle(fontSize = 16.sp),
                             color = Color.White
                         )
-                        IconButton(
-                            onClick = {
+                        IconButton(onClick = {
 
-                            }
-                        ) {
+                        }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.ic_sync),
                                 contentDescription = "im4",
@@ -120,6 +99,40 @@ fun MainScreen() {
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalPagerApi::class)
+@Composable
+fun TabLayout() {
+    val tabList = listOf("HOURS", "DAYS")
+    val pagerState = rememberPagerState()
+    val tabIndex = pagerState.currentPage
+
+    Column(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .padding(5.dp)
+    ) {
+        TabRow(
+            selectedTabIndex = 0,
+            indicator = {},
+            backgroundColor = BlueLight,
+            modifier = Modifier
+                .clip(RoundedCornerShape(10.dp))
+        ) {
+            tabList.forEachIndexed { currentPosition, string ->
+                Tab(
+                    selected = false,
+                    onClick = {
+
+                    },
+                    text = {
+                        Text(text = string)
+                    }
+                )
             }
         }
     }
