@@ -129,6 +129,7 @@ fun TabLayout() {
                 )
             },
             backgroundColor = BlueLight,
+            contentColor = Color.White,
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
         ) {
