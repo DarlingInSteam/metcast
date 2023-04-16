@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -47,22 +49,76 @@ fun MainScreen() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
+                Column(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            modifier = Modifier.padding(5.dp),
+                            text = "11 Nov 2023 16:00",
+                            style = TextStyle(fontSize = 15.sp),
+                            color = Color.White
+                        )
+                        AsyncImage(
+                            model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                            contentDescription = "im2",
+                            modifier = Modifier
+                                .size(35.dp)
+                                .padding(5.dp)
+                        )
+                    }
                     Text(
-                        modifier = Modifier.padding(5.dp),
-                        text = "11 Nov 2023 16:00",
-                        style = TextStyle(fontSize = 15.sp),
+                        text = "Moscow",
+                        style = TextStyle(fontSize = 24.sp),
                         color = Color.White
                     )
-                    AsyncImage(
-                        model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
-                        contentDescription = "im2",
-                        modifier = Modifier.size(35.dp)
-                            .padding(5.dp)
+                    Text(
+                        text = "10°C",
+                        style = TextStyle(fontSize = 64.sp),
+                        color = Color.White
                     )
+                    Text(
+                        text = "Partly cloudy",
+                        style = TextStyle(fontSize = 16.sp),
+                        color = Color.White
+                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        IconButton(
+                            onClick = {
+
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_search),
+                                contentDescription = "im3",
+                                tint = Color.White
+                            )
+                        }
+                        Text(
+                            modifier = Modifier.padding(12.dp),
+                            text = "23°C/13°C",
+                            style = TextStyle(fontSize = 16.sp),
+                            color = Color.White
+                        )
+                        IconButton(
+                            onClick = {
+
+                            }
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_sync),
+                                contentDescription = "im4",
+                                tint = Color.White
+                            )
+                        }
+                    }
                 }
             }
         }
