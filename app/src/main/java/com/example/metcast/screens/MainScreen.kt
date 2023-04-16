@@ -30,7 +30,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 @Composable
-fun MainCard(currDay: MutableState<WeatherModule>, onClickSync: () -> Unit) {
+fun MainCard(currDay: MutableState<WeatherModule>, onClickSync: () -> Unit, onClickSearch: () -> Unit) {
     Column(
         modifier = Modifier
             .padding(5.dp)
@@ -90,7 +90,7 @@ fun MainCard(currDay: MutableState<WeatherModule>, onClickSync: () -> Unit) {
                     ) {
                         IconButton(
                             onClick = {
-
+                                onClickSearch.invoke()
                             }
                         ) {
                             Icon(

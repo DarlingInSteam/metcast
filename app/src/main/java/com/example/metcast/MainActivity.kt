@@ -19,6 +19,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.metcast.data.WeatherModule
+import com.example.metcast.screens.DialogSearch
 import com.example.metcast.screens.MainCard
 import com.example.metcast.screens.TabLayout
 import com.example.metcast.ui.theme.MetcastTheme
@@ -34,6 +35,10 @@ class MainActivity : ComponentActivity() {
                 val daysList = remember {
                     mutableStateOf(listOf<WeatherModule>())
                 }
+                val dialogState = remember {
+                    mutableStateOf(false)
+                }
+
                 val currDay = remember {
                     mutableStateOf(WeatherModule(
                         "null",
@@ -46,6 +51,13 @@ class MainActivity : ComponentActivity() {
                         "",
                     ))
                 }
+
+                if (dialogState.value) {
+                    DialogSearch(dialogState, onSubmit = {
+                        GetData(it, this, daysList, currDay)
+                    })
+                }
+
                 GetData("Novosibirsk", this, daysList, currDay)
                 Image(
                     painter = painterResource(id = R.drawable.background),
@@ -58,6 +70,9 @@ class MainActivity : ComponentActivity() {
                 Column {
                     MainCard(currDay, onClickSync = {
                         GetData("Novosibirsk", this@MainActivity, daysList, currDay)
+                    },
+                    onClickSearch = {
+                        dialogState.value = true
                     })
                     TabLayout(daysList, currDay)
                 }
