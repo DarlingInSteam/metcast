@@ -26,6 +26,8 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
+import org.json.JSONArray
+import org.json.JSONObject
 
 @Composable
 fun MainCard(currDay: MutableState<WeatherModule>) {
@@ -66,10 +68,16 @@ fun MainCard(currDay: MutableState<WeatherModule>) {
                         )
                     }
                     Text(
-                        text = currDay.value.city, style = TextStyle(fontSize = 24.sp), color = Color.White
+                        text = currDay.value.city,
+                        style = TextStyle(fontSize = 24.sp),
+                        color = Color.White
                     )
                     Text(
-                        text = currDay.value.tempCurrent, style = TextStyle(fontSize = 64.sp), color = Color.White
+                        text =
+                        if (currDay.value.tempCurrent.isNotEmpty()) currDay.value.tempCurrent
+                        else "${currDay.value.maxTemp}°C/${currDay.value.minTemp}°C",
+                        style = TextStyle(fontSize = 54.sp),
+                        color = Color.White
                     )
                     Text(
                         text = currDay.value.condition,
@@ -155,7 +163,38 @@ fun TabLayout(daysList: MutableState<List<WeatherModule>>, currDay: MutableState
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->
-            MainList(daysList.value, currDay)
+            val list = when (index) {
+                0 -> GetWeatherByHours(currDay.value.hours)
+                1 -> daysList.value
+                else -> daysList.value
+            }
+            MainList(list, currDay)
         }
     }
+}
+
+private fun GetWeatherByHours(hours: String): List<WeatherModule> {
+    if (hours.isEmpty()) return emptyList()
+
+    val hoursArr = JSONArray(hours)
+    val list = ArrayList<WeatherModule>()
+
+    for (i in 0 until hoursArr.length()) {
+        val item = hoursArr[i] as JSONObject
+
+        list.add(
+            WeatherModule(
+                "",
+                item.getString("time"),
+                item.getString("temp_c").toFloat().toInt().toString() + "°C",
+                item.getJSONObject("condition").getString("text"),
+                item.getJSONObject("condition").getString("icon"),
+                "",
+                "",
+                "",
+            )
+        )
+    }
+
+    return list
 }

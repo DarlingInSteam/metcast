@@ -1,5 +1,6 @@
 package com.example.metcast.screens
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -26,17 +27,20 @@ fun MainList(list: List<WeatherModule>, currDays: MutableState<WeatherModule>) {
         itemsIndexed(
             list
         ) { _, item ->
-            ListItem(item)
+            ListItem(item, currDays)
         }
     }
 }
 
 @Composable
-fun ListItem(item: WeatherModule) {
+fun ListItem(item: WeatherModule, currDays: MutableState<WeatherModule>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 3.dp),
+            .padding(top = 3.dp).clickable {
+                if (item.hours.isEmpty()) return@clickable
+                currDays.value = item
+            },
         backgroundColor = BlueLight,
         elevation = 0.dp,
         shape = RoundedCornerShape(5.dp)
