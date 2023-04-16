@@ -34,7 +34,19 @@ class MainActivity : ComponentActivity() {
                 val daysList = remember {
                     mutableStateOf(listOf<WeatherModule>())
                 }
-                GetData("London", this, daysList)
+                val currDay = remember {
+                    mutableStateOf(WeatherModule(
+                        "null",
+                        "0",
+                        "0",
+                        "null",
+                        "",
+                        "0",
+                        "0",
+                        "",
+                    ))
+                }
+                GetData("Novosibirsk", this, daysList, currDay)
                 Image(
                     painter = painterResource(id = R.drawable.background),
                     contentDescription = "im1",
@@ -44,19 +56,20 @@ class MainActivity : ComponentActivity() {
                     contentScale = ContentScale.FillBounds
                 )
                 Column {
-                    MainCard()
-                    TabLayout(daysList)
+                    MainCard(currDay)
+                    TabLayout(daysList, currDay)
                 }
             }
         }
     }
 }
 
-private fun GetData(city: String, context: Context, daysList: MutableState<List<WeatherModule>>) {
+private fun GetData(city: String, context: Context, daysList: MutableState<List<WeatherModule>>,
+                    currDay: MutableState<WeatherModule>) {
     val url = "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY" +
             "&q=$city" +
             "&days=" +
-            "3" +
+            "7" +
             "&aqi=no&alerts=no"
 
     val queue = Volley.newRequestQueue(context)
@@ -68,6 +81,7 @@ private fun GetData(city: String, context: Context, daysList: MutableState<List<
             responseBody ->
             val list = GetWeatherByDays(responseBody)
             daysList.value = list
+            currDay.value = list[0]
         },
         {
             Log.d("Error", "Error in request: $it" )

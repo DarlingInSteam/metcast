@@ -27,9 +27,8 @@ import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
 import kotlinx.coroutines.launch
 
-@Preview(showBackground = true)
 @Composable
-fun MainCard() {
+fun MainCard(currDay: MutableState<WeatherModule>) {
     Column(
         modifier = Modifier
             .padding(5.dp)
@@ -54,26 +53,26 @@ fun MainCard() {
                     ) {
                         Text(
                             modifier = Modifier.padding(5.dp),
-                            text = "11 Nov 2023 16:00",
+                            text = currDay.value.time,
                             style = TextStyle(fontSize = 15.sp),
                             color = Color.White
                         )
                         AsyncImage(
-                            model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                            model = "https:" + currDay.value.icon,
                             contentDescription = "im2",
                             modifier = Modifier
-                                .size(35.dp)
+                                .size(40.dp)
                                 .padding(5.dp)
                         )
                     }
                     Text(
-                        text = "Moscow", style = TextStyle(fontSize = 24.sp), color = Color.White
+                        text = currDay.value.city, style = TextStyle(fontSize = 24.sp), color = Color.White
                     )
                     Text(
-                        text = "10°C", style = TextStyle(fontSize = 64.sp), color = Color.White
+                        text = currDay.value.tempCurrent, style = TextStyle(fontSize = 64.sp), color = Color.White
                     )
                     Text(
-                        text = "Partly cloudy",
+                        text = currDay.value.condition,
                         style = TextStyle(fontSize = 16.sp),
                         color = Color.White
                     )
@@ -92,7 +91,7 @@ fun MainCard() {
                         }
                         Text(
                             modifier = Modifier.padding(12.dp),
-                            text = "23°C/13°C",
+                            text = "${currDay.value.maxTemp}°C/${currDay.value.minTemp}°C",
                             style = TextStyle(fontSize = 16.sp),
                             color = Color.White
                         )
@@ -114,7 +113,7 @@ fun MainCard() {
 
 @OptIn(ExperimentalPagerApi::class)
 @Composable
-fun TabLayout(daysList: MutableState<List<WeatherModule>>) {
+fun TabLayout(daysList: MutableState<List<WeatherModule>>, currDay: MutableState<WeatherModule>) {
     val tabList = listOf("HOURS", "DAYS")
     val pagerState = rememberPagerState()
     val tabIndex = pagerState.currentPage
@@ -156,15 +155,7 @@ fun TabLayout(daysList: MutableState<List<WeatherModule>>) {
             state = pagerState,
             modifier = Modifier.weight(1.0f)
         ) { index ->
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                itemsIndexed(
-                    daysList.value
-                ) { _, item ->
-                    ListItem(item)
-                }
-            }
+            MainList(daysList.value, currDay)
         }
     }
 }
