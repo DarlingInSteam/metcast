@@ -16,6 +16,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.metcast.R
 import com.example.metcast.ui.theme.BlueLight
 
@@ -55,6 +56,12 @@ fun MainScreen() {
                         text = "11 Nov 2023 16:00",
                         style = TextStyle(fontSize = 15.sp),
                         color = Color.White
+                    )
+                    AsyncImage(
+                        model = "https://cdn.weatherapi.com/weather/64x64/day/116.png",
+                        contentDescription = "im2",
+                        modifier = Modifier.size(35.dp)
+                            .padding(5.dp)
                     )
                 }
             }
