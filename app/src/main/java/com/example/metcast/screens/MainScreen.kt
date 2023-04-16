@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -17,7 +18,10 @@ import coil.compose.AsyncImage
 import com.example.metcast.R
 import com.example.metcast.ui.theme.BlueLight
 import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.pagerTabIndicatorOffset
 import com.google.accompanist.pager.rememberPagerState
+import kotlinx.coroutines.launch
 
 @Preview(showBackground = true)
 @Composable
@@ -110,6 +114,7 @@ fun TabLayout() {
     val tabList = listOf("HOURS", "DAYS")
     val pagerState = rememberPagerState()
     val tabIndex = pagerState.currentPage
+    val coroutineScope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -117,8 +122,12 @@ fun TabLayout() {
             .padding(5.dp)
     ) {
         TabRow(
-            selectedTabIndex = 0,
-            indicator = {},
+            selectedTabIndex = tabIndex,
+            indicator = { position ->
+                TabRowDefaults.Indicator(
+                    Modifier.pagerTabIndicatorOffset(pagerState, position)
+                )
+            },
             backgroundColor = BlueLight,
             modifier = Modifier
                 .clip(RoundedCornerShape(10.dp))
@@ -127,13 +136,23 @@ fun TabLayout() {
                 Tab(
                     selected = false,
                     onClick = {
-
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(currentPosition)
+                        }
                     },
                     text = {
                         Text(text = string)
                     }
                 )
             }
+        }
+        HorizontalPager(
+            count = tabList.size,
+            state = pagerState,
+            modifier = Modifier.weight(1.0f)
+        ) {
+                index ->
+            
         }
     }
 }
