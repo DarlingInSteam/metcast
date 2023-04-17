@@ -30,7 +30,7 @@ const val API_KEY = "b57591f88e1640c188b123207231604"
 
 class MainActivity : ComponentActivity(), LocationHelper.LocationCallback {
     private lateinit var locationHelper: LocationHelper
-    private var cityFromGeo: String = ""
+    private var cityFromGeo: String = "Москва"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

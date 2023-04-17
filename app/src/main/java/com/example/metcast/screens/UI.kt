@@ -54,14 +54,14 @@ fun ListItem(item: WeatherModule, currDays: MutableState<WeatherModule>) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column {
+            Column (Modifier.width(100.dp).height(65.dp)) {
                 Text(
                     text = item.time,
-                    color = Color.White
+                    color = Color.White,
                 )
                 Text(
                     text = item.condition,
-                    color = Color.White
+                    color = Color.White,
                 )
             }
             Text(
