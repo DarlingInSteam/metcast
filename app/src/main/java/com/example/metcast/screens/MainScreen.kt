@@ -46,29 +46,23 @@ fun MainCard(currDay: MutableState<WeatherModule>, onClickSync: () -> Unit, onCl
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(5.dp),
-                            text = currDay.value.time,
-                            style = TextStyle(fontSize = 15.sp),
-                            color = Color.White
-                        )
-                        AsyncImage(
-                            model = "https:" + currDay.value.icon,
-                            contentDescription = "im2",
-                            modifier = Modifier
-                                .size(40.dp)
-                                .padding(5.dp)
-                        )
+
+                    Column() {
+                        Row() {
+                            Text(
+                                text = currDay.value.city,
+                                style = TextStyle(fontSize = 24.sp),
+                                color = Color.White
+                            )
+                            AsyncImage(
+                                model = "https:" + currDay.value.icon,
+                                contentDescription = "im2",
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .padding(5.dp)
+                            )
+                        }
                     }
-                    Text(
-                        text = currDay.value.city,
-                        style = TextStyle(fontSize = 24.sp),
-                        color = Color.White
-                    )
                     Text(
                         text =
                         if (currDay.value.tempCurrent.isNotEmpty()) currDay.value.tempCurrent
