@@ -19,6 +19,7 @@ import com.android.volley.Request
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.example.metcast.data.WeatherModule
+import com.example.metcast.geolocation.LocationHelper
 import com.example.metcast.screens.DialogSearch
 import com.example.metcast.screens.MainCard
 import com.example.metcast.screens.TabLayout
@@ -27,11 +28,17 @@ import org.json.JSONObject
 
 const val API_KEY = "b57591f88e1640c188b123207231604"
 
-class MainActivity : ComponentActivity() {
+class MainActivity : ComponentActivity(), LocationHelper.LocationCallback {
+    private lateinit var locationHelper: LocationHelper
+    private var cityFromGeo: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MetcastTheme {
+                locationHelper = LocationHelper(this, this)
+                locationHelper.requestLocationUpdates()
+
                 val daysList = remember {
                     mutableStateOf(listOf<WeatherModule>())
                 }
@@ -58,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     })
                 }
 
-                GetData("Novosibirsk", this, daysList, currDay)
+                GetData(cityFromGeo, this, daysList, currDay)
                 Image(
                     painter = painterResource(id = R.drawable.background),
                     contentDescription = "im1",
@@ -69,7 +76,7 @@ class MainActivity : ComponentActivity() {
                 )
                 Column {
                     MainCard(currDay, onClickSync = {
-                        GetData("Novosibirsk", this@MainActivity, daysList, currDay)
+                        GetData(cityFromGeo, this@MainActivity, daysList, currDay)
                     },
                     onClickSearch = {
                         dialogState.value = true
@@ -79,6 +86,25 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onLocationReceived(cityName: String) {
+        cityFromGeo = cityName
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        locationHelper.onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Остановка получения обновлений геолокации при завершении активити
+        locationHelper.stopLocationUpdates()
+    }
 }
 
 private fun GetData(city: String, context: Context, daysList: MutableState<List<WeatherModule>>,
@@ -86,8 +112,9 @@ private fun GetData(city: String, context: Context, daysList: MutableState<List<
     val url = "https://api.weatherapi.com/v1/forecast.json?key=$API_KEY" +
             "&q=$city" +
             "&days=" +
-            "7" +
-            "&aqi=no&alerts=no"
+            "14" +
+            "&aqi=no&alerts=no" +
+            "&lang=en"
 
     val queue = Volley.newRequestQueue(context)
 
@@ -114,7 +141,18 @@ private fun GetWeatherByDays(response: String): List<WeatherModule> {
     val list = ArrayList<WeatherModule>()
     val mainObj = JSONObject(response)
 
-    val city = mainObj.getJSONObject("location").getString("name")
+    val buf = mainObj.getJSONObject("location").getString("tz_id")
+    var a = false
+    var cityBuf = ""
+    for (i in buf.indices) {
+        if (a) {
+            cityBuf += buf[i]
+        }
+
+        if (buf[i] == '/') a = true
+    }
+
+    val city = cityBuf
     val days = mainObj.getJSONObject("forecast").getJSONArray("forecastday")
 
     for (i in 0 until days.length()) {
